@@ -1,0 +1,723 @@
+/**
+ * @vizzo/dashboard — Storefront Editor Styles
+ * Vanilla CSS for StorefrontEditorPage, EditorControls, and LivePreview.
+ * RTL layout, mobile-first, dark theme with design tokens.
+ *
+ * Note: This page renders inside .dashboard-content which provides
+ * padding-top (56px topbar) and padding-bottom (64px bottomnav).
+ * We use height: calc(100vh - 56px - 64px) for the split layout.
+ */
+
+/* ─── Editor Page Layout ───────────────────────────────────────────── */
+
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 56px - 64px - var(--safe-area-bottom));
+  background: var(--color-bg-primary);
+}
+
+@media (min-width: 1024px) {
+  .editor-page {
+    flex-direction: row-reverse;
+    min-height: calc(100vh - 56px - 64px);
+  }
+}
+
+/* ─── Editor Controls Panel (Right Side) ───────────────────────────── */
+
+.editor-controls-panel {
+  width: 100%;
+  padding: var(--space-4);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 1024px) {
+  .editor-controls-panel {
+    width: 440px;
+    min-width: 380px;
+    max-width: 480px;
+    height: calc(100vh - 56px - 64px);
+    position: sticky;
+    top: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ─── Editor Preview Panel (Left Side) ─────────────────────────────── */
+
+.editor-preview-panel {
+  display: none;
+  flex: 1;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--space-8) var(--space-4);
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+}
+
+@media (min-width: 1024px) {
+  .editor-preview-panel {
+    display: flex;
+    height: calc(100vh - 56px - 64px);
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* ─── Phone Frame ──────────────────────────────────────────────────── */
+
+.phone-frame {
+  width: 375px;
+  max-height: 780px;
+  border-radius: var(--radius-xl);
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  background: var(--color-bg-primary);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lifted);
+  transform: scale(0.85);
+  transform-origin: top center;
+}
+
+@media (min-width: 1200px) {
+  .phone-frame {
+    transform: scale(0.9);
+  }
+}
+
+.phone-notch {
+  width: 150px;
+  height: 28px;
+  background: #000;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.phone-notch::after {
+  content: '';
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.phone-screen {
+  height: 720px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.phone-screen::-webkit-scrollbar {
+  width: 3px;
+}
+
+.phone-screen::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.phone-screen::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+}
+
+/* ─── Preview Storefront Rendering ─────────────────────────────────── */
+
+.preview-store-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.preview-store-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--color-bg-card);
+}
+
+.preview-store-logo-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.preview-store-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.preview-banner-section {
+  padding: var(--space-3) var(--space-4);
+}
+
+.preview-banner-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.preview-banner-scroll {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.preview-banner-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.preview-product-card {
+  flex-shrink: 0;
+  width: 130px;
+  scroll-snap-align: start;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.preview-product-grid .preview-product-card {
+  width: auto;
+}
+
+.preview-product-thumb {
+  width: 130px;
+  height: 100px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.preview-product-thumb-placeholder {
+  width: 130px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-2xl);
+  color: var(--color-text-muted);
+}
+
+.preview-product-info {
+  padding: var(--space-2);
+}
+
+.preview-product-name {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-product-price {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+  margin-top: var(--space-1);
+}
+
+.preview-product-original-price {
+  font-size: var(--text-xs);
+  color: var(--color-price-strikethrough);
+  text-decoration: line-through;
+  margin-right: var(--space-1);
+}
+
+.preview-discount-badge {
+  font-size: var(--text-xs);
+  color: var(--color-discount);
+  font-weight: var(--font-weight-semibold);
+}
+
+.preview-empty-banner {
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  margin: var(--space-2) var(--space-4);
+}
+
+/* ─── Editor Section ───────────────────────────────────────────────── */
+
+.editor-section {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.editor-section-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.editor-section-title-icon {
+  font-size: var(--text-base);
+  opacity: 0.7;
+}
+
+/* ─── Logo Upload Area ─────────────────────────────────────────────── */
+
+.logo-upload-area {
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.logo-upload-area:hover {
+  border-color: var(--color-accent);
+  background: rgba(124, 58, 237, 0.05);
+}
+
+.logo-upload-area:active {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.logo-upload-icon {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+  opacity: 0.5;
+}
+
+.logo-upload-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.logo-upload-hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+/* ─── Logo Preview ─────────────────────────────────────────────────── */
+
+.logo-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo-preview-image-wrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.logo-preview-image {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-preview-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.logo-change-btn {
+  background: var(--color-bg-card-hover);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.logo-change-btn:hover {
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--color-text-primary);
+}
+
+.logo-remove-btn {
+  background: none;
+  border: none;
+  color: var(--color-error);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-3);
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+.logo-remove-btn:hover {
+  opacity: 1;
+}
+
+/* ─── Banner Slot Row ──────────────────────────────────────────────── */
+
+.banner-slot-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  user-select: none;
+  position: relative;
+  margin-bottom: var(--space-1);
+}
+
+.banner-slot-row:hover {
+  background: var(--color-bg-card-hover);
+}
+
+.banner-slot-row.dragging {
+  opacity: 0.5;
+  box-shadow: var(--shadow-lifted);
+  background: rgba(124, 58, 237, 0.1);
+  z-index: var(--z-dropdown);
+}
+
+.banner-slot-row.drag-over {
+  border-top: 2px solid var(--color-accent);
+}
+
+.banner-slot-drag-handle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: grab;
+  padding: var(--space-1);
+  opacity: 0.4;
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.banner-slot-drag-handle:hover {
+  opacity: 0.8;
+}
+
+.banner-slot-drag-handle:active {
+  cursor: grabbing;
+}
+
+.banner-slot-drag-handle-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-text-secondary);
+}
+
+.banner-slot-drag-handle-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.banner-slot-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-slot-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-slot-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.banner-slot-type-badge {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.banner-slot-type-badge.auto-discount {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-error);
+}
+
+/* ─── Toggle Switch (reused from availability toggle) ──────────────── */
+
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-switch-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-toggle-inactive);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.toggle-switch-input:checked + .toggle-switch-track {
+  background: var(--color-toggle-active);
+}
+
+.toggle-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  pointer-events: none;
+}
+
+.toggle-switch-input:checked ~ .toggle-switch-thumb {
+  transform: translateX(20px);
+}
+
+/* RTL adjustment — thumb moves left when checked */
+[dir="rtl"] .toggle-switch-thumb {
+  left: auto;
+  right: 2px;
+}
+
+[dir="rtl"] .toggle-switch-input:checked ~ .toggle-switch-thumb {
+  transform: translateX(-20px);
+}
+
+.toggle-switch-input:focus-visible + .toggle-switch-track {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Preview Toggle Button (Mobile) ───────────────────────────────── */
+
+.preview-toggle-btn {
+  position: fixed;
+  bottom: calc(80px + var(--safe-area-bottom));
+  left: var(--space-4);
+  z-index: var(--z-sticky);
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xl);
+  box-shadow: var(--shadow-lifted);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.preview-toggle-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.preview-toggle-btn:active {
+  transform: scale(0.92);
+}
+
+@media (min-width: 1024px) {
+  .preview-toggle-btn {
+    display: none;
+  }
+}
+
+/* ─── Preview Overlay (Mobile) ─────────────────────────────────────── */
+
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-overlay);
+  background: var(--color-bg-glass);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+  animation: previewOverlayIn var(--transition-normal) ease forwards;
+}
+
+@keyframes previewOverlayIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.preview-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 375px;
+  margin-bottom: var(--space-4);
+}
+
+.preview-overlay-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.preview-overlay-close {
+  background: var(--color-bg-card);
+  border: none;
+  color: var(--color-text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--text-lg);
+  transition: background var(--transition-fast);
+}
+
+.preview-overlay-close:hover {
+  background: var(--color-bg-card-hover);
+}
+
+.preview-overlay .phone-frame {
+  transform: scale(1);
+  max-height: none;
+}
+
+@media (min-width: 1024px) {
+  .preview-overlay {
+    display: none;
+  }
+}
+
+/* ─── Skeleton Loaders ─────────────────────────────────────────────── */
+
+.skeleton-rect {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-banner-row {
+  height: 52px;
+  margin-bottom: var(--space-2);
+}
+
+.skeleton-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+}
+
+/* ─── Empty State ──────────────────────────────────────────────────── */
+
+.editor-empty-state {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.editor-empty-state-icon {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--space-3);
+  opacity: 0.3;
+}
+
+.editor-empty-state-text {
+  font-size: var(--text-sm);
+}
+
+/* ─── Drag Ghost ───────────────────────────────────────────────────── */
+
+.banner-slot-row[draggable="true"] {
+  -webkit-user-drag: element;
+}
+
+.drag-placeholder {
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  height: 52px;
+  margin-bottom: var(--space-2);
+  opacity: 0.5;
+}

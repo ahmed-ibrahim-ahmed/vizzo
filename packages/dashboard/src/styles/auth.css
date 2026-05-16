@@ -1,0 +1,136 @@
+/**
+ * @vizzo/dashboard — Auth Styles
+ * Styles for LoginPage and AuthGate loading state.
+ * Vanilla CSS only — NO Tailwind, NO CSS-in-JS (AP-11).
+ * RTL layout, Arabic text, mobile-first design.
+ */
+
+/* ─── Login Page ─────────────────────────────────────────────────────── */
+
+.login-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a0a1a 100%);
+  padding: var(--space-6);
+  direction: rtl;
+}
+
+.login-logo {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-extrabold);
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  line-height: var(--line-height-tight);
+  user-select: none;
+}
+
+.login-welcome {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-4);
+  line-height: var(--line-height-relaxed);
+}
+
+.login-cta-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background-color: #ffffff;
+  color: #1a1a3e;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: box-shadow var(--transition-normal), transform var(--transition-fast);
+  min-height: 48px;
+  min-width: 44px;
+}
+
+.login-cta-btn:hover:not(:disabled) {
+  box-shadow: var(--shadow-lifted);
+  transform: translateY(-1px);
+}
+
+.login-cta-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-medium);
+}
+
+.login-cta-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-google-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.login-env-warning {
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+  text-align: center;
+  margin-top: var(--space-2);
+}
+
+/* ─── Auth Loading (Skeleton — AP-05) ────────────────────────────────── */
+
+.auth-loading {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a0a1a 100%);
+  direction: rtl;
+}
+
+.auth-loading-logo {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-extrabold);
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  animation: auth-pulse 2s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes auth-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.97);
+  }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .login-logo {
+    font-size: var(--text-3xl);
+  }
+
+  .login-cta-btn {
+    width: 100%;
+    justify-content: center;
+    padding: var(--space-4) var(--space-6);
+  }
+}

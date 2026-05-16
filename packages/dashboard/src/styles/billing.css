@@ -1,0 +1,548 @@
+/**
+ * @vizzo/dashboard — Billing Page Styles
+ * Vanilla CSS with custom properties — NO Tailwind, NO CSS-in-JS (AP-11).
+ * RTL layout, mobile-first design.
+ */
+
+/* ─── Billing Page Container ───────────────────────────────────────── */
+.billing-page {
+  padding: var(--space-4);
+  padding-bottom: calc(var(--space-16) + var(--safe-area-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Plan Dashboard ───────────────────────────────────────────────── */
+.plan-dashboard {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.plan-status-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+}
+
+.plan-status-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.plan-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.plan-status-badge.free {
+  background: rgba(107, 114, 128, 0.2);
+  color: var(--color-badge-free);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+.plan-status-badge.pro {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--color-badge-pro);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.plan-status-badge.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-badge-pending);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* ─── Resource Bars ────────────────────────────────────────────────── */
+.plan-resources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.resource-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.resource-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resource-label-count {
+  font-family: var(--font-family-en);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.resource-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.resource-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  transition: width var(--transition-normal), background var(--transition-normal);
+  min-width: 4px;
+}
+
+.resource-bar-fill.warning {
+  background: var(--color-warning);
+}
+
+.resource-bar-fill.critical {
+  background: var(--color-error);
+}
+
+/* ─── Upgrade CTA ──────────────────────────────────────────────────── */
+.upgrade-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-6);
+  margin-top: var(--space-5);
+  background: linear-gradient(135deg, var(--color-gold) 0%, #b8941f 100%);
+  color: #0a0a1a;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.upgrade-cta:hover {
+  opacity: 0.95;
+}
+
+.upgrade-cta:active {
+  transform: scale(0.98);
+}
+
+/* ─── Pro Plan Details ─────────────────────────────────────────────── */
+.pro-plan-details {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.pro-plan-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gold);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pro-plan-info {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.pro-plan-info strong {
+  color: var(--color-text-primary);
+}
+
+/* ─── Upgrade Flow ─────────────────────────────────────────────────── */
+.upgrade-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.upgrade-section {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.upgrade-section-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+  padding-right: var(--space-3);
+  border-right: 3px solid var(--color-accent);
+}
+
+/* ─── Pricing Cards ────────────────────────────────────────────────── */
+.pricing-cards {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pricing-card {
+  flex: 1;
+  min-width: 140px;
+  background: var(--color-bg-secondary);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  scroll-snap-align: start;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pricing-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.pricing-card:active {
+  transform: scale(0.98);
+}
+
+.pricing-card.selected {
+  border-color: var(--color-accent);
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.pricing-card.annual {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.pricing-card.annual.selected {
+  border-color: var(--color-gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.pricing-card-badge {
+  position: absolute;
+  top: -10px;
+  right: 50%;
+  transform: translateX(50%);
+  background: var(--color-gold);
+  color: #0a0a1a;
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.pricing-card-title {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+  text-align: center;
+}
+
+.pricing-card-price {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  text-align: center;
+  font-family: var(--font-family-en);
+  margin-bottom: var(--space-1);
+}
+
+.pricing-card-price-unit {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+.pricing-card-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: var(--line-height-relaxed);
+}
+
+/* ─── Bank Transfer Matrix ─────────────────────────────────────────── */
+.bank-transfer-matrix {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.bank-detail-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bank-detail-row:last-child {
+  border-bottom: none;
+}
+
+.bank-detail-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.bank-detail-value {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-en);
+  direction: ltr;
+  text-align: right;
+  word-break: break-all;
+}
+
+.copy-btn {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-3);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.copy-btn.copied {
+  color: var(--color-success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.bank-transfer-note {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+  text-align: center;
+  direction: ltr;
+}
+
+/* ─── Proof Upload Section ─────────────────────────────────────────── */
+.proof-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.proof-upload-instructions {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.proof-upload-area {
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.proof-upload-area:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.04);
+}
+
+.proof-upload-area.has-file {
+  border-color: var(--color-success);
+  border-style: solid;
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.proof-upload-icon {
+  color: var(--color-text-muted);
+}
+
+.proof-upload-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.proof-upload-filename {
+  font-size: var(--text-sm);
+  color: var(--color-success);
+  text-align: center;
+  word-break: break-all;
+}
+
+.proof-upload-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.proof-submit-btn {
+  width: 100%;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.proof-submit-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.proof-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.proof-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── Pending Lock Overlay ─────────────────────────────────────────── */
+.pending-lock-overlay {
+  position: relative;
+}
+
+.pending-lock-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 26, 0.6);
+  border-radius: var(--radius-lg);
+  z-index: var(--z-overlay);
+}
+
+.pending-badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.pending-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-badge-pending);
+}
+
+.pending-badge-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: var(--space-2);
+}
+
+/* ─── Billing Navigation ───────────────────────────────────────────── */
+.billing-back-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-family: var(--font-family);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+  transition: background var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.billing-back-btn:hover {
+  background: var(--color-bg-card);
+}
+
+/* ─── Upgrade Error ────────────────────────────────────────────────── */
+.upgrade-error {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  text-align: center;
+  padding: var(--space-2);
+}
+
+/* ─── Loading Skeleton ─────────────────────────────────────────────── */
+.billing-skeleton {
+  width: 100%;
+  height: 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: billingSkeletonShimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-3);
+}
+
+.billing-skeleton.wide {
+  height: 48px;
+  border-radius: var(--radius-md);
+}
+
+@keyframes billingSkeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

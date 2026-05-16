@@ -199,13 +199,13 @@ Below pricing matrix: payment notice section stating all payments processed via 
 ## Phase 2: Merchant Dashboard — CSR SPA (app.vizzotrade.com) — SRS §3
 
 ### P2-01 — Dashboard Scaffold
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P0-01, P0-02
 - **repo_path**: `packages/dashboard/**`
 - **execution_prompt**: Initialize `packages/dashboard/` with Vite 8 + React 19 + TypeScript + React Router 7. `package.json`: `"name": "@vizzo/dashboard"`, deps on `@vizzo/shared`, `react`, `react-dom`, `react-router-dom`, `@supabase/supabase-js`, `@aws-sdk/client-s3`, `browser-image-compression`. `vite.config.ts`: `base: "/"`, `build.outDir: "dist"`, resolve alias for `@vizzo/shared`. `index.html`: `<html lang="ar" dir="rtl">`, title `Vizzo - لوحة التحكم`, Google Fonts preconnect. Create `src/main.tsx`, `src/App.tsx` with `BrowserRouter` wrapping route definitions. Create `src/styles/tokens.css` (same design tokens as landing, extended with dashboard-specific colors: status badges, toggle states). Create `src/styles/reset.css`. Create `.env.example` with Supabase + R2 env vars. Create `wrangler.toml`: `name = "vizzo-dashboard"`, `pages_build_output_dir = "dist"`.
 
 ### P2-02 — Auth Gate & Login Screen
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-01
 - **repo_path**: `packages/dashboard/src/components/AuthGate.tsx`, `packages/dashboard/src/pages/LoginPage.tsx`, `packages/dashboard/src/hooks/useAuth.ts`, `packages/dashboard/src/styles/auth.css`
 - **execution_prompt**: **`useAuth.ts`** hook: On mount, call `supabase.auth.getSession()`. Subscribe to `onAuthStateChange`. Expose `{ session, user, loading, signIn, signOut }`. `signIn` calls `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })`. `signOut` calls `supabase.auth.signOut()`. No email/password methods — strictly forbidden.
@@ -215,7 +215,7 @@ Below pricing matrix: payment notice section stating all payments processed via 
 **`LoginPage.tsx`**: Minimalist centered layout. Vizzo logo at top. Welcome text: `نظم مبيعاتك في ثوانٍ`. Single CTA button: `المتابعة باستخدام حساب Google` with Google "G" SVG icon. Dark background, same aesthetic as landing. No other form elements.
 
 ### P2-03 — Store Initialization Wizard
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-02
 - **repo_path**: `packages/dashboard/src/pages/OnboardingPage.tsx`, `packages/dashboard/src/hooks/useOnboarding.ts`, `packages/dashboard/src/styles/onboarding.css`
 - **execution_prompt**: Route: `/onboarding`. Conditionally shown only on first merchant account creation (no existing store row). Single-page form with 3 fields:
@@ -227,13 +227,13 @@ Below pricing matrix: payment notice section stating all payments processed via 
 Submit button: `إنشاء المتجر والانطلاق`. On submit: INSERT into `merchants` table (google_id, email, display_name, avatar_url from auth session), then INSERT into `stores` table (name, slug, whatsapp_number, merchant_id). On success → navigate to `/` (Inventory Hub). The `auto_init_banners()` trigger handles default banner creation.
 
 ### P2-04 — Dashboard Layout Shell
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-02
 - **repo_path**: `packages/dashboard/src/components/DashboardLayout.tsx`, `packages/dashboard/src/components/BottomNav.tsx`, `packages/dashboard/src/styles/layout.css`
 - **execution_prompt**: Mobile-first layout shell wrapping all authenticated routes. Top bar: store name on right, subscription badge on left — `مجاني` (gray) for free tier or `برو` (gold) for pro. Adjacent upgrade CTA: `الترقية الى برو` (visible only for free-tier, links to `/settings/billing`). Bottom navigation bar (fixed, mobile-first): 3 tabs — `المنتجات` (inventory, default active), `المتجر` (storefront editor), `الإعدادات` (settings). Use React Router `NavLink` with active state styling. Content area scrolls independently. `safe-area-inset-bottom` padding on bottom nav.
 
 ### P2-05 — Inventory Hub: Analytics Cards
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-04, P0-04
 - **repo_path**: `packages/dashboard/src/components/AnalyticsCards.tsx`, `packages/dashboard/src/hooks/useAnalytics.ts`, `packages/dashboard/src/styles/analytics.css`
 - **execution_prompt**: Three large numerical indicator cards rendered at top of inventory page. Query `analytics` table aggregated by `event_type` for the merchant's store.
@@ -245,7 +245,7 @@ Card 3: `التحويل` — total `order_sent` events. Number in green (`var(--
 Cards: horizontal scroll on mobile (3 in a row, each `min-width: 140px`), grid on desktop. Rounded corners, subtle shadow, semi-transparent backgrounds. Numbers use `font-variant-numeric: tabular-nums` for alignment. Data fetched once on mount via `useAnalytics` hook (async, non-blocking render).
 
 ### P2-06 — Product List & Search/Filter Bar
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-04, P0-04
 - **repo_path**: `packages/dashboard/src/components/ProductList.tsx`, `packages/dashboard/src/components/FilterBar.tsx`, `packages/dashboard/src/hooks/useProducts.ts`, `packages/dashboard/src/styles/productlist.css`
 - **execution_prompt**: **`useProducts.ts`**: Fetch all products for merchant's store from Supabase where `is_archived = false`, ordered by `created_at DESC`. Expose `{ products, loading, refetch, searchQuery, setSearchQuery, categoryFilter, setCategoryFilter }`. Client-side filtering: `searchQuery` filters by product name (case-insensitive substring match). `categoryFilter` filters by category enum.
@@ -255,7 +255,7 @@ Cards: horizontal scroll on mobile (3 in a row, each `min-width: 140px`), grid o
 **`ProductList.tsx`**: Vertical list below FilterBar. Each item rendered as `<ProductCard />`. If filtered list is empty, show appropriate empty state message. Loading state: skeleton cards (not spinners — AP-05).
 
 ### P2-07 — Product Card & Availability Toggle
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-06
 - **repo_path**: `packages/dashboard/src/components/ProductCard.tsx`, `packages/dashboard/src/styles/productcard.css`
 - **execution_prompt**: Horizontal card layout per SRS §3.3. Left: compressed thumbnail (first image from `images[]` array, `object-fit: cover`, fixed 80×80px). Center: bold product name, price display logic — if `is_discounted`, render `base_price` in small gray strikethrough + `discount_price` in red prominent text; else render `base_price` normally. Right: Availability Toggle switch.
@@ -265,7 +265,7 @@ Cards: horizontal scroll on mobile (3 in a row, each `min-width: 140px`), grid o
 Three-dots menu button (`⋮`) on card triggers `<ProductActions />` dropdown.
 
 ### P2-08 — Product Actions Menu
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-07
 - **repo_path**: `packages/dashboard/src/components/ProductActions.tsx`, `packages/dashboard/src/styles/productactions.css`
 - **execution_prompt**: Dropdown menu revealed on three-dots click. Four actions:
@@ -277,7 +277,7 @@ Three-dots menu button (`⋮`) on card triggers `<ProductActions />` dropdown.
 Dropdown: absolute positioned, `z-index` above cards, click-outside-to-close listener, subtle shadow + border.
 
 ### P2-09 — Product Creation Form (FAB + Multi-Tier Schema)
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-06, P0-02
 - **repo_path**: `packages/dashboard/src/pages/ProductFormPage.tsx`, `packages/dashboard/src/components/ImageUploader.tsx`, `packages/dashboard/src/hooks/useProductForm.ts`, `packages/dashboard/src/styles/productform.css`
 - **execution_prompt**: **FAB**: Floating Action Button `+` icon, fixed to bottom-right viewport (above bottom nav), high z-index, accent color, circular, `box-shadow`. On click → navigate to `/products/new`.
@@ -317,13 +317,13 @@ All fields nullable.
 Submit: INSERT or UPDATE to `products` table. On success → navigate back to inventory list with refetch.
 
 ### P2-10 — Rapid Clone Engine
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-08, P2-09
 - **repo_path**: `packages/dashboard/src/hooks/useCloneProduct.ts`
 - **execution_prompt**: `useCloneProduct(productId)` hook. On invoke: fetch full product object by ID. Deep-clone all fields including `images[]`, metadata, `custom_attributes`. Navigate to `/products/new` with cloned data pre-filled in the form (pass via React Router state or context). The form highlights differential fields — `السعة والرامات`, `اللون`, and any optional standardized fields — with a subtle accent border to prompt merchant to modify only what differs. On submit → INSERT as new product (new UUID). The clone shares the same image URLs (no re-upload needed).
 
 ### P2-11 — Discount State Machine Modal
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-08
 - **repo_path**: `packages/dashboard/src/components/DiscountModal.tsx`, `packages/dashboard/src/hooks/useDiscount.ts`, `packages/dashboard/src/styles/discount.css`
 - **execution_prompt**: Modal overlay triggered from ProductActions `إدارة التخفيض`. Displays:
@@ -339,7 +339,7 @@ On save: UPDATE product → `is_discounted = true`, `discount_price = value`, `d
 On remove discount: button to clear → `is_discounted = false`, `discount_price = null`, `discount_expires_at = null`.
 
 ### P2-12 — Storefront Editor: Layout & Live Preview
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-04, P0-04
 - **repo_path**: `packages/dashboard/src/pages/StorefrontEditorPage.tsx`, `packages/dashboard/src/components/LivePreview.tsx`, `packages/dashboard/src/components/EditorControls.tsx`, `packages/dashboard/src/styles/editor.css`
 - **execution_prompt**: Route: `/editor` (via bottom nav `المتجر` tab).
@@ -353,7 +353,7 @@ On remove discount: button to clear → `is_discounted = false`, `discount_price
 - **Row Management**: Drag-and-drop list of banner slots. Each slot shows title + visibility toggle. Reorder via drag handle (implement with native HTML5 drag-and-drop API, no external library). On reorder → update `sort_order` values in `banner_slots` table.
 
 ### P2-13 — Banner Slot Management
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-12
 - **repo_path**: `packages/dashboard/src/components/BannerSlotEditor.tsx`, `packages/dashboard/src/components/ProductSelectorModal.tsx`, `packages/dashboard/src/styles/bannerslot.css`
 - **execution_prompt**: **Auto-Discount Banner** (`slot_type = 'auto_discount'`): Cannot be manually populated. Runs autonomous query for `is_discounted = true` products. Merchant controls: visibility toggle + title edit (default `عروض اليوم`). If query returns 0 results → slot renders with note "لا توجد منتجات مخفضة حالياً" in editor, and `display: none` on live storefront (AP-09).
@@ -361,7 +361,7 @@ On remove discount: button to clear → `is_discounted = false`, `discount_price
 **Manual Banners** (4 pre-initialized: `الاكثر طلبا`, `الهواتف`, `الابتوباب`, `الملحقات`): On click → opens `ProductSelectorModal`: vertical scrollable list of all non-archived products with checkboxes. Selections serialize to `product_ids[]` array on the banner slot. Changes immediately reflected in `LivePreview`. Title is editable. Visibility toggle available.
 
 ### P2-14 — Settings Page: Store Identity
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-04
 - **repo_path**: `packages/dashboard/src/pages/SettingsPage.tsx`, `packages/dashboard/src/styles/settings.css`
 - **execution_prompt**: Route: `/settings` (via bottom nav `الإعدادات` tab). Sections:
@@ -377,7 +377,7 @@ On remove discount: button to clear → `is_discounted = false`, `discount_price
 Save button updates `stores` table row.
 
 ### P2-15 — Subscription & Billing Flow
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-14
 - **repo_path**: `packages/dashboard/src/pages/BillingPage.tsx`, `packages/dashboard/src/components/PlanDashboard.tsx`, `packages/dashboard/src/components/UpgradeFlow.tsx`, `packages/dashboard/src/styles/billing.css`
 - **execution_prompt**: Route: `/settings/billing`.
@@ -391,7 +391,7 @@ Save button updates `stores` table row.
 4. **Pending State Lock**: On receipt submission → INSERT into `subscriptions` table with `status: 'pending'`. UI transitions to locked state showing `قيد المراجعة` badge in orange (`#F59E0B`). All upload actions programmatically disabled. Remains locked until admin approves via Admin Panel (sets `status: 'active'`, `stores.is_pro = true`).
 
 ### P2-16 — Account Management
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-14
 - **repo_path**: `packages/dashboard/src/components/AccountActions.tsx`
 - **execution_prompt**: Bottom of Settings page. Two actions:
@@ -399,7 +399,7 @@ Save button updates `stores` table row.
 2. **Delete Account**: Button triggers double-confirmation flow. First click → "هل أنت متأكد أنك تريد حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه". Second confirmation → type store name to confirm. On confirm → soft-archive all products, mark store as deleted, sign out. Prevents catastrophic accidental deletion.
 
 ### P2-17 — Dashboard Route Assembly
-- **status**: Todo
+- **status**: Done
 - **dependencies**: P2-02 through P2-16
 - **repo_path**: `packages/dashboard/src/App.tsx`
 - **execution_prompt**: Assemble all routes inside `AuthGate` wrapper:
