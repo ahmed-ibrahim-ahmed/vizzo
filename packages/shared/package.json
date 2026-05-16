@@ -1,0 +1,16 @@
+{
+  "name": "@vizzo/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.0",
+    "@aws-sdk/client-s3": "^3.800.0",
+    "browser-image-compression": "^2.0.2"
+  }
+}
