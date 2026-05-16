@@ -6,7 +6,7 @@
  * Supabase client initialized and passed via props to auth-triggering components.
  */
 
-import { createSupabaseClient } from '@vizzo/shared/supabase';
+import { createSupabaseClient } from '@vizzo/shared';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import PainPoints from './components/PainPoints';

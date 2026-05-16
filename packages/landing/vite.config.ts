@@ -14,7 +14,7 @@ export default defineConfig({
       '@vizzo/shared/constants': resolve(__dirname, '../shared/src/constants'),
       '@vizzo/shared/types': resolve(__dirname, '../shared/src/types'),
       '@vizzo/shared/utils': resolve(__dirname, '../shared/src/utils'),
-      '@vizzo/shared/supabase': resolve(__dirname, '../shared/src/supabase'),
+      '@vizzo/shared/supabase': resolve(__dirname, '../shared/src/supabase/client.ts'),
     },
   },
   server: {
