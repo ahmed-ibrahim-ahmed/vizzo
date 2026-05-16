@@ -1,18 +1,42 @@
 /**
- * @vizzo/landing — App Entry
- * Landing page SPA for vizzotrade.com
- * Will be assembled in P1-08 with all spatial funnel components.
- * Currently renders a placeholder.
+ * @vizzo/landing — App Assembly (P1-08)
+ * Renders all components in exact spatial funnel order:
+ * Header → HeroSection → PainPoints → Features → ViralProof → Pricing → FinalCTA
+ * No React Router — single page with anchor scroll only.
+ * Supabase client initialized and passed via props to auth-triggering components.
  */
 
+import { createSupabaseClient } from '@vizzo/shared/supabase';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection';
+import PainPoints from './components/PainPoints';
+import Features from './components/Features';
+import ViralProof from './components/ViralProof';
+import Pricing from './components/Pricing';
+import FinalCTA from './components/FinalCTA';
+
 function App() {
+  const supabase = createSupabaseClient();
+
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://app.vizzotrade.com',
+      },
+    });
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%)' }}>
-      <div style={{ textAlign: 'center', color: '#fff' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1rem' }}>Vizzo</h1>
-        <p style={{ fontSize: '1.25rem', opacity: 0.8 }}>حول فوضى الواتساب إلى متجر احترافي في 10 ثوانٍ</p>
-      </div>
-    </div>
+    <>
+      <Header onLogin={handleLogin} />
+      <HeroSection onLogin={handleLogin} />
+      <PainPoints />
+      <Features />
+      <ViralProof />
+      <Pricing />
+      <FinalCTA onLogin={handleLogin} />
+    </>
   );
 }
 

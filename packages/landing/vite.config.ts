@@ -11,6 +11,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@vizzo/shared': resolve(__dirname, '../shared/src'),
+      '@vizzo/shared/constants': resolve(__dirname, '../shared/src/constants'),
+      '@vizzo/shared/types': resolve(__dirname, '../shared/src/types'),
+      '@vizzo/shared/utils': resolve(__dirname, '../shared/src/utils'),
+      '@vizzo/shared/supabase': resolve(__dirname, '../shared/src/supabase'),
     },
   },
   server: {
