@@ -10,14 +10,15 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
  * Creates a new Supabase client instance.
  * Each app (landing, dashboard, storefront) should create its own instance.
  */
-export function createSupabaseClient(): SupabaseClient {
+export function createSupabaseClient(): SupabaseClient | null {
   const url = import.meta.env.VITE_SUPABASE_URL as string;
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
   if (!url || !anonKey) {
-    throw new Error(
-      'Missing Supabase environment variables. Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.'
+    console.warn(
+      '[Vizzo] Supabase env vars missing — auth features disabled. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable.'
     );
+    return null;
   }
 
   return createClient(url, anonKey);

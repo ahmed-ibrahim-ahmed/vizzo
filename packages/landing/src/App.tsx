@@ -19,6 +19,10 @@ function App() {
   const supabase = createSupabaseClient();
 
   const handleLogin = async () => {
+    if (!supabase) {
+      console.warn('[Vizzo] Cannot login — Supabase is not configured. Set environment variables to enable Google OAuth.');
+      return;
+    }
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
