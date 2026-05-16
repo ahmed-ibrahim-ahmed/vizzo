@@ -6,3 +6,9 @@ dist/
 .next/
 *.log
 .DS_Store
+
+# Sandbox artifacts (not part of Vizzo project)
+skills/
+upload/
+dev.log
+worklog.md
