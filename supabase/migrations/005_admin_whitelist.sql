@@ -18,5 +18,5 @@ CREATE POLICY "Admins can view own admin row" ON admins
 
 -- Seed Initial Administrator
 INSERT INTO admins (email) 
-VALUES ('ahmed@vizzotrade.com')
+VALUES ('ahmedibrahimahmed009988@gmail.com')
 ON CONFLICT (email) DO NOTHING;

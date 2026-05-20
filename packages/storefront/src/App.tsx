@@ -24,8 +24,47 @@ import { useBanners } from './hooks/useBanners';
 import { useInfiniteProducts } from './hooks/useInfiniteProducts';
 import { useAnalyticsEmitter } from './hooks/useAnalyticsEmitter';
 
-function StorefrontContainer() {
-  const { slug } = useParams<{ slug: string }>();
+function getStoreSlug(): string | null {
+  const hostname = window.location.hostname;
+  
+  if (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname.startsWith('192.168.') ||
+    hostname.startsWith('10.') ||
+    hostname.endsWith('.local')
+  ) {
+    const parts = hostname.split('.');
+    if (parts.length > 1 && parts[parts.length - 1] === 'localhost') {
+      const subdomain = parts[0];
+      if (!['www', 'admin', 'dashboard', 'app', 'api'].includes(subdomain.toLowerCase())) {
+        return subdomain;
+      }
+    }
+    return null;
+  }
+
+  const parts = hostname.split('.');
+  if (parts.length <= 2) {
+    return null;
+  }
+  
+  const subdomain = parts[0];
+  const reserved = ['www', 'admin', 'dashboard', 'app', 'api'];
+  if (reserved.includes(subdomain.toLowerCase())) {
+    return null;
+  }
+  
+  return subdomain;
+}
+
+interface StorefrontContainerProps {
+  overrideSlug?: string;
+}
+
+function StorefrontContainer({ overrideSlug }: StorefrontContainerProps = {}) {
+  const { slug: pathSlug } = useParams<{ slug: string }>();
+  const slug = overrideSlug || pathSlug;
   const [store, setStore] = useState<Store | null>(null);
   const [storeLoading, setStoreLoading] = useState(true);
   const [storeError, setStoreError] = useState<string | null>(null);
@@ -307,7 +346,13 @@ function StorefrontActiveStore({ store }: StorefrontActiveStoreProps) {
             {!searchQuery.trim() && (
               <BannerCarousel
                 banners={banners}
-                onProductClick={(id) => navigate(`/${store.slug}/p/${id}`)}
+                onProductClick={(id) => {
+                  if (getStoreSlug()) {
+                    navigate(`/p/${id}`);
+                  } else {
+                    navigate(`/${store.slug}/p/${id}`);
+                  }
+                }}
                 onAddToCart={handleAddToCartAttempt}
               />
             )}
@@ -339,7 +384,13 @@ function StorefrontActiveStore({ store }: StorefrontActiveStoreProps) {
                   <BuyerProductCard
                     key={product.id}
                     product={product}
-                    onProductClick={(id) => navigate(`/${store.slug}/p/${id}`)}
+                    onProductClick={(id) => {
+                      if (getStoreSlug()) {
+                        navigate(`/p/${id}`);
+                      } else {
+                        navigate(`/${store.slug}/p/${id}`);
+                      }
+                    }}
                     onAddToCart={handleAddToCartAttempt}
                   />
                 )}
@@ -380,6 +431,41 @@ function StorefrontActiveStore({ store }: StorefrontActiveStoreProps) {
 }
 
 function App() {
+  const subdomainSlug = getStoreSlug();
+
+  if (subdomainSlug) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<StorefrontContainer overrideSlug={subdomainSlug} />} />
+          <Route path="/p/:productId" element={<StorefrontContainer overrideSlug={subdomainSlug} />} />
+          <Route
+            path="*"
+            element={
+              <div
+                style={{
+                  minHeight: '100vh',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%)',
+                  color: '#fff',
+                  fontFamily: "'Noto Sans Arabic', sans-serif",
+                  padding: '1rem',
+                  direction: 'rtl',
+                }}
+              >
+                <div style={{ textAlign: 'center' }}>
+                  <h3>الصفحة غير موجودة</h3>
+                </div>
+              </div>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>

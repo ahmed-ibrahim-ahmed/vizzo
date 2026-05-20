@@ -120,7 +120,7 @@ export default function ProductDetailPage({ onAddToCart }: ProductDetailPageProp
     return (
       <div className="detail-page-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
         <div style={{ color: 'var(--color-error)' }}>{error || 'المنتج غير موجود'}</div>
-        <button className="detail-back-btn" onClick={() => navigate(`/${slug}`)}>
+        <button className="detail-back-btn" onClick={() => navigate(slug ? `/${slug}` : '/')}>
           العودة للمتجر
         </button>
       </div>
@@ -134,7 +134,7 @@ export default function ProductDetailPage({ onAddToCart }: ProductDetailPageProp
     <div className="detail-page-container">
       {/* Back trigger header */}
       <div className="detail-nav-header">
-        <button className="detail-back-btn" onClick={() => navigate(`/${slug}`)}>
+        <button className="detail-back-btn" onClick={() => navigate(slug ? `/${slug}` : '/')}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -303,7 +303,7 @@ export default function ProductDetailPage({ onAddToCart }: ProductDetailPageProp
               <BuyerProductCard
                 key={p.id}
                 product={p}
-                onProductClick={(id) => navigate(`/${slug}/p/${id}`)}
+                onProductClick={(id) => navigate(slug ? `/${slug}/p/${id}` : `/p/${id}`)}
                 onAddToCart={(prod, e) => {
                   e.stopPropagation();
                   onAddToCart(prod);

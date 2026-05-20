@@ -138,35 +138,68 @@ export default function EditorControls({
     const bucketName = import.meta.env.VITE_R2_BUCKET_NAME as string;
     const publicUrl = import.meta.env.VITE_R2_PUBLIC_URL as string;
 
-    if (!accountId || !accessKeyId || !secretAccessKey || !bucketName || !publicUrl) {
-      console.warn('[EditorControls] R2 env vars missing — logo upload disabled');
+    const tebiAccessKey = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string;
+    const tebiSecretKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string;
+    const tebiBucket = import.meta.env.VITE_TEBI_BUCKET_NAME as string;
+    const tebiEndpoint = import.meta.env.VITE_TEBI_ENDPOINT as string;
+    const tebiPublicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string;
+
+    const isR2Configured = accountId && accessKeyId && secretAccessKey && bucketName && publicUrl;
+    const isTebiConfigured = tebiAccessKey && tebiSecretKey && tebiBucket && tebiEndpoint;
+
+    if (!isR2Configured && !isTebiConfigured) {
+      console.warn('[EditorControls] Both R2 and Tebi env vars missing — logo upload disabled');
       return null;
     }
 
     try {
       const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
-      const s3 = new S3Client({
-        region: 'auto',
-        endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-        credentials: {
-          accessKeyId,
-          secretAccessKey,
-        },
-      });
+      
+      let s3;
+      let finalBucket;
+      let finalKey;
+      let finalUrl;
 
-      const key = `logos/${store?.id || 'unknown'}/${Date.now()}-${file.name}`;
+      if (isR2Configured) {
+        s3 = new S3Client({
+          region: 'auto',
+          endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+          credentials: {
+            accessKeyId,
+            secretAccessKey,
+          },
+        });
+        finalBucket = bucketName;
+        finalKey = `logos/${store?.id || 'unknown'}/${Date.now()}-${file.name}`;
+        finalUrl = `${publicUrl}/${finalKey}`;
+      } else {
+        s3 = new S3Client({
+          region: 'global',
+          endpoint: tebiEndpoint,
+          credentials: {
+            accessKeyId: tebiAccessKey,
+            secretAccessKey: tebiSecretKey,
+          },
+        });
+        finalBucket = tebiBucket;
+        finalKey = `logos/${store?.id || 'unknown'}/${Date.now()}-${file.name}`;
+        finalUrl = tebiPublicUrl 
+          ? `${tebiPublicUrl}/${finalKey}` 
+          : `${tebiEndpoint}/${tebiBucket}/${finalKey}`;
+      }
+
       await s3.send(
         new PutObjectCommand({
-          Bucket: bucketName,
-          Key: key,
+          Bucket: finalBucket,
+          Key: finalKey,
           Body: file,
           ContentType: file.type || 'image/webp',
         })
       );
 
-      return `${publicUrl}/${key}`;
+      return finalUrl;
     } catch (err) {
-      console.error('[EditorControls] R2 upload error:', err);
+      console.error('[EditorControls] Logo S3 upload error:', err);
       return null;
     }
   };
