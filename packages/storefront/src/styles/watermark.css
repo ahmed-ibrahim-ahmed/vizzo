@@ -1,0 +1,86 @@
+/**
+ * @vizzo/storefront — Watermark Banner Styles
+ * Glassmorphic, modern sticky footer banner for free-tier stores.
+ */
+
+.watermark-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  background: rgba(10, 10, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--space-3) + var(--safe-area-bottom));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  direction: rtl;
+}
+
+.watermark-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  font-family: var(--font-family);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease, transform 0.2s ease;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.watermark-link:hover {
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+}
+
+.watermark-text {
+  letter-spacing: -0.01em;
+}
+
+.watermark-brand {
+  font-family: var(--font-family-en);
+  font-weight: var(--font-weight-bold);
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 2px;
+}
+
+.watermark-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.watermark-link:hover .watermark-icon {
+  opacity: 1;
+  transform: translate(-1px, -1px);
+}
+
+@media (max-width: 480px) {
+  .watermark-banner {
+    padding: var(--space-2) var(--space-3);
+    padding-bottom: calc(var(--space-2) + var(--safe-area-bottom));
+  }
+
+  .watermark-link {
+    font-size: var(--text-xs);
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+  }
+}
