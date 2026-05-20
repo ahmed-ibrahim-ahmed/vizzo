@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "paths": {
+      "@vizzo/shared": ["../shared/src"]
+    }
+  },
+  "include": ["src", "../shared/src"]
+}

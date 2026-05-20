@@ -1,0 +1,278 @@
+/**
+ * @vizzo/dashboard — Onboarding Styles
+ * Styles for OnboardingPage wizard.
+ * Vanilla CSS only — NO Tailwind, NO CSS-in-JS (AP-11).
+ * RTL layout, Arabic text, mobile-first design.
+ */
+
+/* ─── Onboarding Page ────────────────────────────────────────────────── */
+
+.onboarding-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a0a1a 100%);
+  padding: var(--space-4);
+  direction: rtl;
+}
+
+.onboarding-form {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.onboarding-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: var(--space-2);
+}
+
+/* ─── Field Group ─────────────────────────────────────────────────────── */
+
+.onboarding-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.onboarding-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.onboarding-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  font-family: var(--font-family);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 48px;
+}
+
+.onboarding-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.onboarding-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+.onboarding-field-error {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  margin-top: var(--space-1);
+}
+
+/* ─── Slug Preview ────────────────────────────────────────────────────── */
+
+.slug-preview {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 48px;
+  transition: border-color var(--transition-fast);
+}
+
+.slug-preview:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+.slug-prefix {
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  font-family: var(--font-family-en);
+  direction: ltr;
+  user-select: none;
+}
+
+.slug-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-2);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  font-family: var(--font-family-en);
+  direction: ltr;
+  min-width: 0;
+  min-height: 48px;
+}
+
+.slug-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.slug-input:focus {
+  outline: none;
+}
+
+.slug-status {
+  padding: var(--space-3) var(--space-3);
+  font-size: var(--text-base);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.slug-checking {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  animation: slug-checking-blink 1s ease-in-out infinite;
+}
+
+@keyframes slug-checking-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.slug-valid {
+  color: var(--color-success);
+  font-weight: var(--font-weight-bold);
+}
+
+.slug-invalid {
+  color: var(--color-error);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ─── WhatsApp Input Group ────────────────────────────────────────────── */
+
+.whatsapp-input-group {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 48px;
+  transition: border-color var(--transition-fast);
+}
+
+.whatsapp-input-group:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+.whatsapp-prefix {
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  font-family: var(--font-family-en);
+  direction: ltr;
+  user-select: none;
+  pointer-events: none;
+}
+
+.whatsapp-digits-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  font-family: var(--font-family-en);
+  direction: ltr;
+  min-width: 0;
+  min-height: 48px;
+  letter-spacing: 0.05em;
+}
+
+.whatsapp-digits-input::placeholder {
+  color: var(--color-text-muted);
+  letter-spacing: normal;
+}
+
+.whatsapp-digits-input:focus {
+  outline: none;
+}
+
+/* ─── Submit Error ────────────────────────────────────────────────────── */
+
+.onboarding-submit-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  text-align: center;
+}
+
+/* ─── Submit Button ───────────────────────────────────────────────────── */
+
+.onboarding-submit {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-accent-gradient);
+  color: #ffffff;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-normal);
+  min-height: 52px;
+}
+
+.onboarding-submit:hover:not(:disabled) {
+  opacity: 0.95;
+  box-shadow: var(--shadow-lifted);
+  transform: translateY(-1px);
+}
+
+.onboarding-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-medium);
+}
+
+.onboarding-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .onboarding-form {
+    padding: var(--space-6) var(--space-4);
+    gap: var(--space-5);
+  }
+
+  .onboarding-title {
+    font-size: var(--text-xl);
+  }
+}

@@ -1,0 +1,91 @@
+/**
+ * @vizzo/landing — Final CTA Block Styles (P1-07)
+ * Minimalist full-width section. Terminal conversion node of the funnel.
+ */
+
+@keyframes fadeUpCta {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.final-cta {
+  padding: var(--space-30) var(--space-6);
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a0a1a 100%);
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.final-cta__text {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-relaxed);
+  max-width: 600px;
+  margin-bottom: var(--space-8);
+  opacity: 0;
+}
+
+.final-cta__text--visible {
+  animation: fadeUpCta 0.8s ease both;
+}
+
+.final-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-8);
+  background: #ffffff;
+  color: #0a0a1a;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: box-shadow var(--transition-normal), transform var(--transition-fast);
+  opacity: 0;
+}
+
+.final-cta__btn--visible {
+  animation: fadeUpCta 0.8s ease both;
+  animation-delay: 0.2s;
+}
+
+.final-cta__btn:hover {
+  box-shadow: var(--shadow-lifted);
+  transform: translateY(-2px);
+}
+
+.final-cta__btn:active {
+  transform: translateY(0);
+}
+
+.final-cta__btn-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  .final-cta {
+    padding: var(--space-20) var(--space-4);
+  }
+
+  .final-cta__text {
+    font-size: var(--text-xl);
+  }
+
+  .final-cta__btn {
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-6);
+  }
+}
