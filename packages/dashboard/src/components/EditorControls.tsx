@@ -138,17 +138,18 @@ export default function EditorControls({
     const bucketName = import.meta.env.VITE_R2_BUCKET_NAME as string;
     const publicUrl = import.meta.env.VITE_R2_PUBLIC_URL as string;
 
-    const tebiAccessKey = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string;
-    const tebiSecretKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string;
-    const tebiBucket = import.meta.env.VITE_TEBI_BUCKET_NAME as string;
-    const tebiEndpoint = import.meta.env.VITE_TEBI_ENDPOINT as string;
-    const tebiPublicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string;
+    const s3AccessKeyId = import.meta.env.VITE_S3_ACCESS_KEY_ID as string || import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string;
+    const s3SecretAccessKey = import.meta.env.VITE_S3_SECRET_ACCESS_KEY as string || import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string;
+    const s3BucketName = import.meta.env.VITE_S3_BUCKET_NAME as string || import.meta.env.VITE_TEBI_BUCKET_NAME as string;
+    const s3Endpoint = import.meta.env.VITE_S3_ENDPOINT as string || import.meta.env.VITE_TEBI_ENDPOINT as string;
+    const s3PublicUrl = import.meta.env.VITE_S3_PUBLIC_URL as string || import.meta.env.VITE_TEBI_PUBLIC_URL as string;
+    const s3Region = import.meta.env.VITE_S3_REGION as string || 'global';
 
     const isR2Configured = accountId && accessKeyId && secretAccessKey && bucketName && publicUrl;
-    const isTebiConfigured = tebiAccessKey && tebiSecretKey && tebiBucket && tebiEndpoint;
+    const isS3Configured = s3AccessKeyId && s3SecretAccessKey && s3BucketName && s3Endpoint;
 
-    if (!isR2Configured && !isTebiConfigured) {
-      console.warn('[EditorControls] Both R2 and Tebi env vars missing — logo upload disabled');
+    if (!isR2Configured && !isS3Configured) {
+      console.warn('[EditorControls] Storage env vars missing — logo upload disabled');
       return null;
     }
 
@@ -174,18 +175,18 @@ export default function EditorControls({
         finalUrl = `${publicUrl}/${finalKey}`;
       } else {
         s3 = new S3Client({
-          region: 'global',
-          endpoint: tebiEndpoint,
+          region: s3Region,
+          endpoint: s3Endpoint,
           credentials: {
-            accessKeyId: tebiAccessKey,
-            secretAccessKey: tebiSecretKey,
+            accessKeyId: s3AccessKeyId,
+            secretAccessKey: s3SecretAccessKey,
           },
         });
-        finalBucket = tebiBucket;
+        finalBucket = s3BucketName;
         finalKey = `logos/${store?.id || 'unknown'}/${Date.now()}-${file.name}`;
-        finalUrl = tebiPublicUrl 
-          ? `${tebiPublicUrl}/${finalKey}` 
-          : `${tebiEndpoint}/${tebiBucket}/${finalKey}`;
+        finalUrl = s3PublicUrl 
+          ? `${s3PublicUrl}/${finalKey}` 
+          : `${s3Endpoint}/${s3BucketName}/${finalKey}`;
       }
 
       await s3.send(

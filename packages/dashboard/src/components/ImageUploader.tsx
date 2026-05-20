@@ -92,17 +92,18 @@ async function uploadToS3(file: Blob, originalName: string): Promise<string> {
   const r2BucketName = import.meta.env.VITE_R2_BUCKET_NAME as string | undefined;
   const r2PublicUrl = import.meta.env.VITE_R2_PUBLIC_URL as string | undefined;
 
-  const tebiAccessKeyId = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string | undefined;
-  const tebiSecretAccessKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string | undefined;
-  const tebiBucketName = import.meta.env.VITE_TEBI_BUCKET_NAME as string | undefined;
-  const tebiEndpoint = import.meta.env.VITE_TEBI_ENDPOINT as string | undefined;
-  const tebiPublicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string | undefined;
+  const s3AccessKeyId = import.meta.env.VITE_S3_ACCESS_KEY_ID as string | undefined || import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string | undefined;
+  const s3SecretAccessKey = import.meta.env.VITE_S3_SECRET_ACCESS_KEY as string | undefined || import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string | undefined;
+  const s3BucketName = import.meta.env.VITE_S3_BUCKET_NAME as string | undefined || import.meta.env.VITE_TEBI_BUCKET_NAME as string | undefined;
+  const s3Endpoint = import.meta.env.VITE_S3_ENDPOINT as string | undefined || import.meta.env.VITE_TEBI_ENDPOINT as string | undefined;
+  const s3PublicUrl = import.meta.env.VITE_S3_PUBLIC_URL as string | undefined || import.meta.env.VITE_TEBI_PUBLIC_URL as string | undefined;
+  const s3Region = import.meta.env.VITE_S3_REGION as string | undefined || 'global';
 
   const isR2Configured = r2AccountId && r2AccessKeyId && r2SecretAccessKey && r2BucketName && r2PublicUrl;
-  const isTebiConfigured = tebiAccessKeyId && tebiSecretAccessKey && tebiBucketName && tebiEndpoint;
+  const isS3Configured = s3AccessKeyId && s3SecretAccessKey && s3BucketName && s3Endpoint;
 
-  if (!isR2Configured && !isTebiConfigured) {
-    console.warn('[ImageUploader] Missing both Cloudflare R2 and Tebi.io env configurations. Falling back to temporary Object URL.');
+  if (!isR2Configured && !isS3Configured) {
+    console.warn('[ImageUploader] Missing storage environment configurations. Falling back to temporary Object URL.');
     return URL.createObjectURL(file);
   }
 
@@ -128,16 +129,16 @@ async function uploadToS3(file: Blob, originalName: string): Promise<string> {
     finalUrl = `${r2PublicUrl!}/${key}`;
   } else {
     s3 = new S3Client({
-      region: 'global',
-      endpoint: tebiEndpoint!,
+      region: s3Region,
+      endpoint: s3Endpoint!,
       credentials: {
-        accessKeyId: tebiAccessKeyId!,
-        secretAccessKey: tebiSecretAccessKey!,
+        accessKeyId: s3AccessKeyId!,
+        secretAccessKey: s3SecretAccessKey!,
       },
     });
-    finalBucket = tebiBucketName!;
+    finalBucket = s3BucketName!;
     finalKey = key;
-    finalUrl = tebiPublicUrl ? `${tebiPublicUrl}/${key}` : `${tebiEndpoint!}/${tebiBucketName!}/${key}`;
+    finalUrl = s3PublicUrl ? `${s3PublicUrl}/${key}` : `${s3Endpoint!}/${s3BucketName!}/${key}`;
   }
 
   await s3.send(
