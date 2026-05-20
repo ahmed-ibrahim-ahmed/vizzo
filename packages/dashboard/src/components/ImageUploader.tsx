@@ -7,7 +7,6 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { compressImage } from '@vizzo/shared';
 import '../styles/productform.css';
 
 interface ImageUploaderProps {
@@ -22,26 +21,101 @@ interface UploadingImage {
   progress: number;
 }
 
-async function uploadToR2(file: File): Promise<string> {
-  const accountId = import.meta.env.R2_ACCOUNT_ID as string | undefined;
-  const accessKeyId = import.meta.env.R2_ACCESS_KEY_ID as string | undefined;
-  const secretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY as string | undefined;
-  const bucketName = import.meta.env.R2_BUCKET_NAME as string | undefined;
-  const publicUrl = import.meta.env.R2_PUBLIC_URL as string | undefined;
+/**
+ * Client-side high-efficiency image transcoding & center cropping.
+ * Strips all metadata, resizes to exactly 800x800px, and transcodes to WebP at 80% quality.
+ * Serves as Option A: Pure client-side Canvas optimization.
+ */
+function compressAndCropToWebP(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      try {
+        const cropSize = Math.min(img.width, img.height);
+        const cropX = (img.width - cropSize) / 2;
+        const cropY = (img.height - cropSize) / 2;
 
-  if (!accountId || !accessKeyId || !secretAccessKey) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 800;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          URL.revokeObjectURL(img.src);
+          reject(new Error('Could not get canvas 2D context'));
+          return;
+        }
+
+        // Draw image onto canvas center-cropped and scaled to 800x800
+        ctx.drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, 800, 800);
+
+        canvas.toBlob(
+          (blob) => {
+            URL.revokeObjectURL(img.src);
+            if (blob) {
+              resolve(blob);
+            } else {
+              // Fallback to JPEG if WebP is not supported by legacy environments
+              canvas.toBlob(
+                (jpegBlob) => {
+                  if (jpegBlob) {
+                    resolve(jpegBlob);
+                  } else {
+                    reject(new Error('Canvas image export failed'));
+                  }
+                },
+                'image/jpeg',
+                0.8
+              );
+            }
+          },
+          'image/webp',
+          0.8
+        );
+      } catch (err) {
+        URL.revokeObjectURL(img.src);
+        reject(err);
+      }
+    };
+    img.onerror = (err) => {
+      URL.revokeObjectURL(img.src);
+      reject(new Error('Failed to load image file: ' + err));
+    };
+  });
+}
+
+async function uploadToTebi(file: Blob, originalName: string): Promise<string> {
+  const accessKeyId = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string | undefined;
+  const secretAccessKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string | undefined;
+  const bucketName = import.meta.env.VITE_TEBI_BUCKET_NAME as string | undefined;
+  const endpoint = import.meta.env.VITE_TEBI_ENDPOINT as string | undefined;
+  const publicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string | undefined;
+
+  if (!accessKeyId || !secretAccessKey || !bucketName || !endpoint) {
+    console.warn('[ImageUploader] Missing Tebi.io env configurations. Falling back to temporary Object URL.');
     return URL.createObjectURL(file);
   }
 
   const s3 = new S3Client({
-    region: 'auto',
-    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    region: 'global',
+    endpoint: endpoint,
     credentials: { accessKeyId, secretAccessKey },
   });
 
-  const key = `products/${crypto.randomUUID()}-${file.name}`;
-  await s3.send(new PutObjectCommand({ Bucket: bucketName, Key: key, Body: file }));
-  return `${publicUrl}/${key}`;
+  const baseName = originalName.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "");
+  const key = `products/${crypto.randomUUID()}-${baseName}.webp`;
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+      Body: file,
+      ContentType: 'image/webp'
+    })
+  );
+
+  return publicUrl ? `${publicUrl}/${key}` : `${endpoint}/${bucketName}/${key}`;
 }
 
 export default function ImageUploader({ images, onImagesChange, maxImages }: ImageUploaderProps) {
@@ -67,6 +141,8 @@ export default function ImageUploader({ images, onImagesChange, maxImages }: Ima
 
       setUploading((prev) => [...prev, ...newUploading]);
 
+      // Process uploaded images sequentially
+      let currentImages = [...images];
       for (let i = 0; i < filesToProcess.length; i++) {
         const file = filesToProcess[i];
         const uploadId = newUploading[i].id;
@@ -76,19 +152,22 @@ export default function ImageUploader({ images, onImagesChange, maxImages }: Ima
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 30 } : u))
           );
 
-          const compressed = await compressImage(file);
+          // Phase 4 Canvas optimization: center-crop 800x800px & transcode to WebP 80%
+          const optimizedBlob = await compressAndCropToWebP(file);
 
           setUploading((prev) =>
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 60 } : u))
           );
 
-          const url = await uploadToR2(compressed);
+          // Phase 4 S3 Upload: Direct to Tebi.io Data Lake
+          const url = await uploadToTebi(optimizedBlob, file.name);
 
           setUploading((prev) =>
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 90 } : u))
           );
 
-          onImagesChange([...images, url]);
+          currentImages = [...currentImages, url];
+          onImagesChange(currentImages);
 
           setUploading((prev) =>
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 100 } : u))
@@ -110,6 +189,7 @@ export default function ImageUploader({ images, onImagesChange, maxImages }: Ima
     },
     [images, onImagesChange, maxImages, uploading.length]
   );
+
 
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
