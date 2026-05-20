@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@rolldown/binding-linux-x64-gnu':
+        specifier: ^1.0.2
+        version: 1.0.2
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -836,6 +839,12 @@ packages:
     cpu: [x64]
     os: [linux]
     libc: [glibc]
+
+  '@rolldown/binding-linux-x64-gnu@1.0.2':
+    resolution: {integrity: sha512-0+bOkiQ779+r1WpoHOWHqncvyySci0vKph+myNDYb+im6meJAzHQXay6oEgnkHuUGouM1LKTZwqKpBow6Kj7CQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [linux]
 
   '@rolldown/binding-linux-x64-musl@1.0.1':
     resolution: {integrity: sha512-bV4fzswuzVcKD90o/VM6QqKxnxlDq0g2BISDLNVmxrnhpv1DDbyPhCIjYfvzYLV+MvkKKnQt2Q6AO86SEBULUQ==}
@@ -2040,6 +2049,8 @@ snapshots:
 
   '@rolldown/binding-linux-x64-gnu@1.0.1':
     optional: true
+
+  '@rolldown/binding-linux-x64-gnu@1.0.2': {}
 
   '@rolldown/binding-linux-x64-musl@1.0.1':
     optional: true
