@@ -48,16 +48,29 @@ Apply migrations in chronological order. You can copy/paste these files directly
 
 ---
 
-## 2. Tebi.io S3 Production Bucket Setup
+## 2. Cloudflare R2 Production Bucket Setup (Recommended)
 
-1. Sign in to your [Tebi.io Console](https://tebi.io).
-2. Go to **Buckets > Create Bucket**. Name it (e.g. `vizzo-media`).
-3. Set the bucket permissions to **Public Read** so storefront shoppers can fetch product images directly.
-4. Collect the S3 Connection Parameters:
-   - Endpoint: `https://s3.tebi.io`
-   - Access Key
-   - Secret Key
-   - Bucket Name
+Since Tebi.io shut down on March 31, 2026, Cloudflare R2 is our primary S3-compatible storage engine. It provides a massive 10GB free tier and zero egress (bandwidth) fees.
+
+### A. Bucket Creation
+1. Sign in to your [Cloudflare Dashboard](https://dash.cloudflare.com).
+2. Navigate to **R2 Object Storage** in the sidebar.
+3. Click **Create Bucket**. Name it `vizzo-media` and click **Create**.
+4. Go to the bucket's **Settings** tab:
+   - Under **Public Sharing**, click **Connect Domain** to link a custom subdomain (e.g. `media.vizzotrade.com`) or enable the **R2.dev Subdomain** (allow public read access so storefront buyers can load store logos and product images).
+
+### B. Access Keys & Credentials
+1. Go back to the **R2 Overview** page.
+2. On the right sidebar, click **Manage R2 API Tokens**.
+3. Click **Create API Token**:
+   - Token name: `Vizzo Dashboard Uploader`
+   - Permissions: **Edit** (allows writing objects)
+   - TTL: **Forever** (or standard long duration)
+   - Click **Create Token**.
+4. Securely copy the generated keys:
+   - **Access Key ID**
+   - **Secret Access Key**
+   - **Endpoint Account ID** (visible under the endpoint URL, e.g. `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`)
 
 ---
 
@@ -75,9 +88,13 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_TEBI_BUCKET_NAME=vizzo-media
-VITE_TEBI_ACCESS_KEY=your-tebi-access-key
-VITE_TEBI_SECRET_KEY=your-tebi-secret-key
+
+# Cloudflare R2 Storage Configurations
+VITE_R2_ACCOUNT_ID=your-cloudflare-account-id
+VITE_R2_ACCESS_KEY_ID=your-r2-access-key-id
+VITE_R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
+VITE_R2_BUCKET_NAME=vizzo-media
+VITE_R2_PUBLIC_URL=https://pub-xxxxxx.r2.dev
 ```
 
 ### C. Admin Package (`packages/admin/.env`)

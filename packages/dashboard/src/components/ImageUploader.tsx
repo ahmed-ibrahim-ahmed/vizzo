@@ -85,37 +85,71 @@ function compressAndCropToWebP(file: File): Promise<Blob> {
   });
 }
 
-async function uploadToTebi(file: Blob, originalName: string): Promise<string> {
-  const accessKeyId = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string | undefined;
-  const secretAccessKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string | undefined;
-  const bucketName = import.meta.env.VITE_TEBI_BUCKET_NAME as string | undefined;
-  const endpoint = import.meta.env.VITE_TEBI_ENDPOINT as string | undefined;
-  const publicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string | undefined;
+async function uploadToS3(file: Blob, originalName: string): Promise<string> {
+  const r2AccountId = import.meta.env.VITE_R2_ACCOUNT_ID as string | undefined;
+  const r2AccessKeyId = import.meta.env.VITE_R2_ACCESS_KEY_ID as string | undefined;
+  const r2SecretAccessKey = import.meta.env.VITE_R2_SECRET_ACCESS_KEY as string | undefined;
+  const r2BucketName = import.meta.env.VITE_R2_BUCKET_NAME as string | undefined;
+  const r2PublicUrl = import.meta.env.VITE_R2_PUBLIC_URL as string | undefined;
 
-  if (!accessKeyId || !secretAccessKey || !bucketName || !endpoint) {
-    console.warn('[ImageUploader] Missing Tebi.io env configurations. Falling back to temporary Object URL.');
+  const tebiAccessKeyId = import.meta.env.VITE_TEBI_ACCESS_KEY_ID as string | undefined;
+  const tebiSecretAccessKey = import.meta.env.VITE_TEBI_SECRET_ACCESS_KEY as string | undefined;
+  const tebiBucketName = import.meta.env.VITE_TEBI_BUCKET_NAME as string | undefined;
+  const tebiEndpoint = import.meta.env.VITE_TEBI_ENDPOINT as string | undefined;
+  const tebiPublicUrl = import.meta.env.VITE_TEBI_PUBLIC_URL as string | undefined;
+
+  const isR2Configured = r2AccountId && r2AccessKeyId && r2SecretAccessKey && r2BucketName && r2PublicUrl;
+  const isTebiConfigured = tebiAccessKeyId && tebiSecretAccessKey && tebiBucketName && tebiEndpoint;
+
+  if (!isR2Configured && !isTebiConfigured) {
+    console.warn('[ImageUploader] Missing both Cloudflare R2 and Tebi.io env configurations. Falling back to temporary Object URL.');
     return URL.createObjectURL(file);
   }
 
-  const s3 = new S3Client({
-    region: 'global',
-    endpoint: endpoint,
-    credentials: { accessKeyId, secretAccessKey },
-  });
+  let s3;
+  let finalBucket;
+  let finalKey;
+  let finalUrl;
 
   const baseName = originalName.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "");
   const key = `products/${crypto.randomUUID()}-${baseName}.webp`;
 
+  if (isR2Configured) {
+    s3 = new S3Client({
+      region: 'auto',
+      endpoint: `https://${r2AccountId}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: r2AccessKeyId,
+        secretAccessKey: r2SecretAccessKey,
+      },
+    });
+    finalBucket = r2BucketName;
+    finalKey = key;
+    finalUrl = `${r2PublicUrl}/${key}`;
+  } else {
+    s3 = new S3Client({
+      region: 'global',
+      endpoint: tebiEndpoint,
+      credentials: {
+        accessKeyId: tebiAccessKeyId,
+        secretAccessKey: tebiSecretAccessKey,
+      },
+    });
+    finalBucket = tebiBucketName;
+    finalKey = key;
+    finalUrl = tebiPublicUrl ? `${tebiPublicUrl}/${key}` : `${tebiEndpoint}/${tebiBucketName}/${key}`;
+  }
+
   await s3.send(
     new PutObjectCommand({
-      Bucket: bucketName,
-      Key: key,
+      Bucket: finalBucket,
+      Key: finalKey,
       Body: file,
       ContentType: 'image/webp'
     })
   );
 
-  return publicUrl ? `${publicUrl}/${key}` : `${endpoint}/${bucketName}/${key}`;
+  return finalUrl;
 }
 
 export default function ImageUploader({ images, onImagesChange, maxImages }: ImageUploaderProps) {
@@ -159,8 +193,8 @@ export default function ImageUploader({ images, onImagesChange, maxImages }: Ima
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 60 } : u))
           );
 
-          // Phase 4 S3 Upload: Direct to Tebi.io Data Lake
-          const url = await uploadToTebi(optimizedBlob, file.name);
+          // Phase 4 S3 Upload: Direct S3/R2 Upload pipeline
+          const url = await uploadToS3(optimizedBlob, file.name);
 
           setUploading((prev) =>
             prev.map((u) => (u.id === uploadId ? { ...u, progress: 90 } : u))
