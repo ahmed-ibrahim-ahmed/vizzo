@@ -48,29 +48,47 @@ Apply migrations in chronological order. You can copy/paste these files directly
 
 ---
 
-## 2. Cloudflare R2 Production Bucket Setup (Recommended)
+## 2. Production S3-Compatible Object Storage Setup
 
-Since Tebi.io shut down on March 31, 2026, Cloudflare R2 is our primary S3-compatible storage engine. It provides a massive 10GB free tier and zero egress (bandwidth) fees.
+You have three excellent options for storing storefront logos and product images. **Options A and B do not require any bank card or credit card to activate.**
 
-### A. Bucket Creation
-1. Sign in to your [Cloudflare Dashboard](https://dash.cloudflare.com).
-2. Navigate to **R2 Object Storage** in the sidebar.
-3. Click **Create Bucket**. Name it `vizzo-media` and click **Create**.
-4. Go to the bucket's **Settings** tab:
-   - Under **Public Sharing**, click **Connect Domain** to link a custom subdomain (e.g. `media.vizzotrade.com`) or enable the **R2.dev Subdomain** (allow public read access so storefront buyers can load store logos and product images).
-
-### B. Access Keys & Credentials
-1. Go back to the **R2 Overview** page.
-2. On the right sidebar, click **Manage R2 API Tokens**.
-3. Click **Create API Token**:
-   - Token name: `Vizzo Dashboard Uploader`
-   - Permissions: **Edit** (allows writing objects)
-   - TTL: **Forever** (or standard long duration)
-   - Click **Create Token**.
-4. Securely copy the generated keys:
+### Option A: Supabase Storage (Highly Recommended - No Credit Card Required)
+Since you are already setting up a Supabase project, you can use its built-in S3-compatible Object Storage.
+1. Sign in to your [Supabase Dashboard](https://supabase.com).
+2. Go to **Storage** in the left sidebar and click **New Bucket**.
+   - Bucket Name: `vizzo-media`
+   - Allowed MIME types: (Leave empty or set to allow images like `image/*`)
+   - **Public Bucket:** Enable this toggle (allows storefront buyers to load product images).
+3. Go to **Project Settings** (gear icon) > **Storage**.
+4. Scroll down to **S3 Access Keys** and click **Generate new key**.
+5. Save your credentials immediately:
    - **Access Key ID**
    - **Secret Access Key**
-   - **Endpoint Account ID** (visible under the endpoint URL, e.g. `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`)
+   - **Endpoint:** Copy the S3 endpoint URL (e.g. `https://<PROJECT_REF>.supabase.co/storage/v1/s3`)
+   - **Region:** e.g. your project's region (visible on the same settings panel).
+
+### Option B: Backblaze B2 (No Credit Card Required)
+Backblaze B2 offers a large **10 GB free tier** and does not require a card to sign up.
+1. Sign up for a free account at [Backblaze B2](https://www.backblaze.com/cloud-storage).
+2. Go to **Buckets** > **Create a Bucket**:
+   - Bucket Name: `vizzo-media`
+   - Files in Bucket are: **Public**
+   - Click **Create a Bucket**.
+3. Go to **Application Keys** and click **Add a New Application Key**:
+   - Name: `vizzo-dashboard-uploader`
+   - Allow Access to Bucket(s): `vizzo-media`
+   - Access Type: **Read and Write**
+   - Click **Create New Key**.
+4. Copy the keys and connection parameters:
+   - **keyID** (Access Key ID)
+   - **applicationKey** (Secret Access Key)
+   - **S3 Endpoint:** (e.g., `https://s3.us-east-005.backblazeb2.com`)
+
+### Option C: Cloudflare R2 (Requires Card for Verification)
+If you have a card available later, Cloudflare R2 has a **10 GB free tier** and zero egress fees.
+1. In Cloudflare, go to **R2 Object Storage** and click **Create Bucket** (`vizzo-media`).
+2. Go to the bucket's **Settings** tab and enable the **R2.dev Subdomain** or connect a custom domain (e.g. `media.vizzotrade.com`) to allow public read access.
+3. Go to **R2 Overview** > **Manage R2 API Tokens** > **Create API Token** with Edit permissions.
 
 ---
 
@@ -89,12 +107,21 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 
-# Cloudflare R2 Storage Configurations
-VITE_R2_ACCOUNT_ID=your-cloudflare-account-id
-VITE_R2_ACCESS_KEY_ID=your-r2-access-key-id
-VITE_R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
-VITE_R2_BUCKET_NAME=vizzo-media
-VITE_R2_PUBLIC_URL=https://pub-xxxxxx.r2.dev
+# Storage Configurations (Supabase Storage / Backblaze B2 / any S3)
+VITE_S3_ACCESS_KEY_ID=your-s3-access-key-id
+VITE_S3_SECRET_ACCESS_KEY=your-s3-secret-access-key
+VITE_S3_BUCKET_NAME=vizzo-media
+VITE_S3_ENDPOINT=https://your-project.supabase.co/storage/v1/s3
+VITE_S3_REGION=your-bucket-region # e.g., us-east-1 (or global)
+# Optional: Full public URL for images. For Supabase, you can use:
+# VITE_S3_PUBLIC_URL=https://your-project.supabase.co/storage/v1/object/public/vizzo-media
+
+# (Optional: Only if you chose Cloudflare R2 in Option C)
+# VITE_R2_ACCOUNT_ID=your-cloudflare-account-id
+# VITE_R2_ACCESS_KEY_ID=your-r2-access-key-id
+# VITE_R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
+# VITE_R2_BUCKET_NAME=vizzo-media
+# VITE_R2_PUBLIC_URL=https://pub-xxxxxx.r2.dev
 ```
 
 ### C. Admin Package (`packages/admin/.env`)
