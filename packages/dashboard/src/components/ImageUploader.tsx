@@ -117,27 +117,27 @@ async function uploadToS3(file: Blob, originalName: string): Promise<string> {
   if (isR2Configured) {
     s3 = new S3Client({
       region: 'auto',
-      endpoint: `https://${r2AccountId}.r2.cloudflarestorage.com`,
+      endpoint: `https://${r2AccountId!}.r2.cloudflarestorage.com`,
       credentials: {
-        accessKeyId: r2AccessKeyId,
-        secretAccessKey: r2SecretAccessKey,
+        accessKeyId: r2AccessKeyId!,
+        secretAccessKey: r2SecretAccessKey!,
       },
     });
-    finalBucket = r2BucketName;
+    finalBucket = r2BucketName!;
     finalKey = key;
-    finalUrl = `${r2PublicUrl}/${key}`;
+    finalUrl = `${r2PublicUrl!}/${key}`;
   } else {
     s3 = new S3Client({
       region: 'global',
-      endpoint: tebiEndpoint,
+      endpoint: tebiEndpoint!,
       credentials: {
-        accessKeyId: tebiAccessKeyId,
-        secretAccessKey: tebiSecretAccessKey,
+        accessKeyId: tebiAccessKeyId!,
+        secretAccessKey: tebiSecretAccessKey!,
       },
     });
-    finalBucket = tebiBucketName;
+    finalBucket = tebiBucketName!;
     finalKey = key;
-    finalUrl = tebiPublicUrl ? `${tebiPublicUrl}/${key}` : `${tebiEndpoint}/${tebiBucketName}/${key}`;
+    finalUrl = tebiPublicUrl ? `${tebiPublicUrl}/${key}` : `${tebiEndpoint!}/${tebiBucketName!}/${key}`;
   }
 
   await s3.send(
